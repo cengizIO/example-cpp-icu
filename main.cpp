@@ -1,44 +1,44 @@
 #include <iostream>
-#include <unicode/coll.h>
-#include <vector>
+#include "main.h"
 
 using namespace icu_55;
 using namespace std;
 
-int compare(const UnicodeString &a, const UnicodeString &b) {
-    UErrorCode errorCode = U_ZERO_ERROR;
-    Collator *myCollator = Collator::createInstance(Locale("tr", "TR"), errorCode);
-    return 1 - myCollator->compare(a, b);
-}
-
 int main() {
-    vector<UnicodeString> v = {"A", "B", "C", "Ç", "D", "E", "F", "G", "Ğ", "H", "I",
-                               "İ", "J", "K", "L", "M", "N", "O", "Ö", "P", "R", "S",
-                               "Ş", "T", "U", "Ü", "V", "Y", "Z",
-                               "a", "b", "c", "ç", "d", "e", "f", "g", "ğ", "h", "ı",
-                               "i", "j", "k", "l", "m", "n", "o", "ö", "p", "r", "s",
-                               "ş", "t", "u", "ü", "v", "y", "z"};
+    vector<UnicodeString> v = {
+            "A", "B", "C", "Ç", "D", "E", "F", "G", "Ğ", "H", "I", "İ", "J", "K",
+            "L", "M", "N", "O", "Ö", "P", "R", "S", "Ş", "T", "U", "Ü", "V", "Y",
+            "Z", "a", "b", "c", "ç", "d", "e", "f", "g", "ğ", "h", "ı", "i", "j",
+            "k", "l", "m", "n", "o", "ö", "p", "r", "s", "ş", "t", "u", "ü", "v",
+            "y", "z"
+    };
 
-    cout << "Default collation order: ";
     sort(v.begin(), v.end());
 
-    for (auto s : v) {
-        std::string utf8;
-        s.toUTF8String(utf8);
-        cout << utf8 << ' ';
-    }
-    cout << '\n';
+    cout << "Default collation order: " << endl;
+    printVectorItems(v);
+    cout << endl;
 
-    cout << "Turkish collation order: ";
-    sort(v.begin(), v.end(), compare);
+    sort(v.begin(), v.end(), compareAsTrTr);
 
-    for (auto s : v) {
-        std::string utf8;
-        s.toUTF8String(utf8);
-        cout << utf8 << ' ';
-    }
-
-    cout << '\n';
+    cout << "tr_TR collation order: " << endl;
+    printVectorItems(v);
+    cout << endl;
 
     return 0;
+}
+
+bool compareAsTrTr(const UnicodeString &a, const UnicodeString &b) {
+    UErrorCode errorCode = U_ZERO_ERROR;
+    Collator *myCollator = Collator::createInstance(Locale("tr", "TR"), errorCode);
+    UCollationResult result = myCollator->compare(a, b, errorCode);
+    return result == UCollationResult::UCOL_LESS;
+}
+
+void printVectorItems(const std::vector<UnicodeString> &v) {
+    for (auto s : v) {
+        string utf8;
+        s.toUTF8String(utf8);
+        cout << utf8 << ' ';
+    }
 }

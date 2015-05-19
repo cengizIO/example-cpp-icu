@@ -11,5 +11,5 @@ set(SOURCE_FILES main.cpp)
 include_directories(${ICU_INCLUDE_DIRS})
 link_directories(/usr/local/opt/icu4c/lib)
 
-add_executable(sandbox_cpp_icu ${SOURCE_FILES})
+add_executable(sandbox_cpp_icu ${SOURCE_FILES} main.h)
 target_link_libraries(sandbox_cpp_icu ${ICU_LIBRARIES})
